@@ -28,9 +28,10 @@ public class EntryPoint {
         printLoader(loader);
 
         var hooks = new BulkHooker();
-        HookList.initSystem(hooks);
+        HookList.initSystem(hooks, loader);
         hooks.apply(loader);
     }
+
 
     public static void mainApplication(String package_name, ClassLoader loader) {
         printLoader(loader);

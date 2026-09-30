@@ -64,8 +64,10 @@ public class HookList {
         }
     }
 
-    public static void initSystem(BulkHooker hooks) {
+    public static void initSystem(BulkHooker hooks, ClassLoader loader) {
         if (BuildConfig.PATCH_3 && booleanProperty("PATCH_3")) {
+            CorePatchHooks.initAll(hooks, loader);
+
             {
                 var impl = SDK_INT < 33 ? HTF.TRUE : HTF.constant(true, new String[]{"installPackagesLI", "preparePackageLI", "preparePackage"}, new String[]{"reconcilePackages"});
                 if (SDK_INT >= 28) {

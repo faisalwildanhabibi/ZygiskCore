@@ -5,6 +5,16 @@ plugins {
     alias(libs.plugins.java.zygisk)
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'com.github.vova7878' && details.requested.name == 'DexFile') {
+            details.useVersion 'c4fdf48d72'
+            details.because 'JitPack pom resolution for v1.0.3 maps to commit hash c4fdf48d72'
+        }
+    }
+}
+
+
 def updateJsonBase = "https://raw.githubusercontent.com/vova7878-modules/PMPatch/main/updates/"
 
 android {
@@ -81,10 +91,10 @@ android {
             zygisk {
                 packages(ZygoteLoader.ALL_PACKAGES)
 
-                id = "com_v7878_pmpatch_full"
-                name = "PMPatchFull"
+                id = "zygisk_core"
+                name = "ZygiskCore"
                 updateJson = "${updateJsonBase}update_full.json"
-                archiveName = "PMPatchFull"
+                archiveName = "ZygiskCore"
             }
 
             buildConfigField("boolean", "PATCH_1", "true")
@@ -104,9 +114,9 @@ android {
                 property("PATCH_2", "true")
                 property("PATCH_3", "true")
 
-                id = "com_v7878_pmpatch_lp"
-                name = "PMPatchLP"
-                archiveName = "PMPatchLP"
+                id = "zygisk_core_lp"
+                name = "ZygiskCoreLP"
+                archiveName = "ZygiskCoreLP"
             }
 
             buildConfigField("boolean", "PATCH_1", "true")
@@ -117,18 +127,25 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 zygisk {
-    author = "v7878"
-    description = "Disable signature verification For Android"
+    author = "faisalwildanhabibi, LSPosed, v7878"
+    description = "Zygisk-based CorePatch - Disable signature verification and package manager restrictions for Android"
     entrypoint = "com.v7878.hooks.pmpatch.Main"
     attachNativeLibs = false
     generateChecksums = true
 }
+
 
 dependencies {
     implementation libs.androidvmtools
